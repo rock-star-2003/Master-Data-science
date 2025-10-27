@@ -45,19 +45,3 @@
 - 📚 What resources helped me most?
 
 ---
-
-### 📁 **Option 2: Google Sheet Version**
-
-**Columns to include:**
-
-| Date | Day | Hours | Focus | Topics | Resources | Project | GitHub Link | Key Learnings | Notes / Next Steps |
-|------|------|--------|--------|----------|-------------|-------------|---------------|--------------------|
-
-You can copy this structure directly →  
-👉 [**Google Sheets Template Link (Editable Copy)**](https://docs.google.com/spreadsheets/d/1MLvYh7qtd0p3FfgHX9HbE3bVudcVYDb1XbC9vA1rUgw/template/preview)  
-*(Click “Use Template” → make your own copy)*
-
----
-
-Would you like me to generate a **custom pre-filled version** of this tracker for **Week 1** (with all 7 days’ plan filled in), so you can paste it directly into your GitHub as a Markdown file?  
-It’ll look like a clean daily log with your exact Day 1–7 topics & project names.
