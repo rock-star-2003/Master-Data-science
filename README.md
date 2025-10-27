@@ -1,13 +1,3 @@
-Excellent 🎯 — perfect setup for a **pro-level data scientist**:
-
-* You’ll learn by watching concise tutorials 🧠,
-* Reinforce with hands-on coding 💻 in **VS Code**,
-* Push everything to **GitHub** 📂 for your portfolio,
-* And log daily progress like a real senior analyst 🗒️.
-
-Let’s begin with your **WEEK 1 (Days 1–7)** detailed **hour-by-hour bootcamp timetable** — optimized for **10 hrs/day**, focused, and realistic.
-
----
 
 ## 🧩 WEEK 1 – Core Data Science Foundations
 
@@ -130,11 +120,10 @@ You’ll have:
 
 ---
 
-Would you like me to now generate a **daily progress tracker template (Google Sheet / Markdown)** so you can record:
+**daily progress tracker template (Google Sheet / Markdown)**
 
 * Hours studied
 * Topics done
 * GitHub links
 * Key insights
 
-That will make your workflow measurable like a professional bootcamp.
