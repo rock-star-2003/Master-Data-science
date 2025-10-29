@@ -91,7 +91,7 @@ In this tutorial, we will use the following libraries:
 
 - [Pandas](EDA/pandas.ipynb) - This library is used for structured data operations, like import CSV files, create dataframes, and data preparation
 
-- [Numpy]() - This is a mathematical library. Has a powerful N-dimensional array object, linear algebra, Fourier transform, etc.
+- [Numpy](EDA/NumPy.ipynb) - This is a mathematical library. Has a powerful N-dimensional array object, linear algebra, Fourier transform, etc.
 
 - [Matplotlib]() - This library is used for visualization of data.
 
