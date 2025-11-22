@@ -1,0 +1,303 @@
+MAIN WORKFLOW
+├── Initialize Application
+├── TRY: Data Scraping Process
+│   ├── Build Data Table
+│   ├── Data Scraping Sequence
+│   │   ├── Browser Initialization
+│   │   └── Do-While Loop (Pagination Handler)
+│   │       ├── Search Navigation
+│   │       ├── While Loop (Page Processing)
+│   │       │   ├── Data Extraction
+│   │       │   ├── Data Processing
+│   │       │   └── Pagination Logic
+│   │       └── Loop Continuation
+│   └── Data Export
+│
+├── CATCH: Exception Handling
+│   ├── Navigation Errors
+│   ├── Extraction Errors
+│   ├── Browser Errors
+│   └── System Errors
+│
+└── FINALLY: Cleanup & Reporting
+
+
+
+
+
+Sequence: Initialize_Application
+├── Build Data Table: Products_DataTable
+│   ├── Columns:
+│   │   ├─ ProductName (String)
+│   │   ├─ Price (String)
+│   │   ├─ Description (String)
+│   │   ├─ Rating (String)
+│   │   ├─ ProductURL (String)
+│   │   └─ PageNumber (Int32)
+│   └─ Output: ProductsDT
+│
+├── Assign: Initialize_Variables
+│   ├─ CurrentPage = 1
+│   ├─ MaxPages = 5
+│   ├─ NextPageExists = True
+│   ├─ SearchQuery = "laptops"
+│   ├─ BrowserInstance = Nothing
+│   └─ ExtractedData = Nothing
+│
+└── Log Message
+    └─ "Application initialized successfully"
+
+
+Sequence: Data_Scraping_Main
+├── Open Browser: Browser_Initialization
+│   ├─ BrowserType: Chrome
+│   ├─ Url: "https://example-ecommerce.com"
+│   ├─ Private: True
+│   └─ Output: BrowserInstance
+│
+├── Maximize Window
+│   └─ Browser: BrowserInstance
+│
+└── Do: Pagination_Loop
+    ├── Sequence: Page_Processing
+    │   ├── Type Into: Search_Products
+    │   │   ├─ Browser: BrowserInstance
+    │   │   ├─ Selector: <webctrl tag='INPUT' name='search' />
+    │   │   ├─ Text: SearchQuery
+    │   │   └─ EmptyField: True
+    │   │
+    │   ├── Click: Submit_Search
+    │   │   ├─ Browser: BrowserInstance
+    │   │   ├─ Selector: <webctrl tag='BUTTON' type='submit' />
+    │   │   └─ WaitForReady: Complete
+    │   │
+    │   ├── Delay: Wait_For_Results
+    │   │   └─ Duration: 00:00:05
+    │   │
+    │   └── While: Page_Extraction_Loop
+    │       ├─ Condition: NextPageExists = True And CurrentPage <= MaxPages
+    │       │
+    │       └── Sequence: Process_Current_Page
+    │           ├── Try Catch: Extract_Data_Safely
+    │           │   ├── Try
+    │           │   │   ├── Extract Data Table: Get_Products
+    │           │   │   │   ├─ Browser: BrowserInstance
+    │           │   │   │   ├─ Selector: <webctrl tag='TABLE' class='products-table' />
+    │           │   │   │   └─ Output: ExtractedData
+    │           │   │   │
+    │           │   │   └── If: Validate_Extraction
+    │           │   │       ├─ Condition: ExtractedData IsNot Nothing And ExtractedData.Rows.Count > 0
+    │           │   │       │
+    │           │   │       └── Then
+    │           │   │           └── For Each Row: Process_Products
+    │           │   │               ├─ Row: CurrentRow in ExtractedData
+    │           │   │               │
+    │           │   │               └── Sequence: Add_To_Main_Table
+    │           │   │                   ├── Assign: Extract_Values
+    │           │   │                   │   ├─ ProductName = CurrentRow(0).ToString()
+    │           │   │                   │   ├─ Price = CurrentRow(1).ToString()
+    │           │   │                   │   ├─ Description = CurrentRow(2).ToString()
+    │           │   │                   │   ├─ Rating = CurrentRow(3).ToString()
+    │           │   │                   │   └─ ProductURL = CurrentRow(4).ToString()
+    │           │   │                   │
+    │           │   │                   ├── Add Data Row: ProductsDT
+    │           │   │                   │   └─ ArrayRow: 
+    │           │   │                   │       {
+    │           │   │                   │           ProductName,
+    │           │   │                   │           Price,
+    │           │   │                   │           Description,
+    │           │   │                   │           Rating,
+    │           │   │                   │           ProductURL,
+    │           │   │                   │           CurrentPage
+    │           │   │                   │       }
+    │           │   │                   │
+    │           │   │                   └── Log Message
+    │           │   │                       └─ "Added product: " + ProductName
+    │           │   │
+    │           │   └── Catch (System.Exception)
+    │           │       └── Log Message
+    │           │           ├─ Level: Warning
+    │           │           └─ Message: "Data extraction failed: " + exception.Message
+    │           │
+    │           ├── Mouse Scroll: Scroll_To_Bottom
+    │           │   ├─ Browser: BrowserInstance
+    │           │   ├─ Position: Bottom
+    │           │   └─ Steps: 5
+    │           │
+    │           ├── Delay: Wait_After_Scroll
+    │           │   └─ Duration: 00:00:02
+    │           │
+    │           ├── CV Screen Scope: Find_Next_Button
+    │           │   ├─ Region: Custom region at bottom right
+    │           │   │
+    │           │   └── CV Element Exists: Check_Next_Button
+    │           │       ├─ Image: "next_button.png"
+    │           │       ├─ Confidence: 0.8
+    │           │       ├─ Timeout: 10000
+    │           │       └─ Output: NextPageExists
+    │           │
+    │           ├── If: Handle_Pagination
+    │           │   ├─ Condition: NextPageExists = True
+    │           │   │
+    │           │   └── Then
+    │           │       ├── Try Catch: Navigate_Next_Page
+    │           │       │   ├── Try
+    │           │       │   │   ├── CV Click Image: Click_Next
+    │           │       │   │   │   ├─ Image: "next_button.png"
+    │           │       │   │   │   ├─ Confidence: 0.8
+    │           │       │   │   │   └─ Timeout: 10000
+    │           │       │   │   │
+    │           │       │   │   ├── Delay: Wait_Page_Load
+    │           │       │   │   │   └─ Duration: 00:00:05
+    │           │       │   │   │
+    │           │       │   │   └── Assign: Update_Page_Counter
+    │           │       │   │       └─ CurrentPage = CurrentPage + 1
+    │           │       │   │
+    │           │       │   └── Catch (System.Exception)
+    │           │       │       ├── Log Message
+    │           │       │       │   ├─ Level: Error
+    │           │       │       │   └─ Message: "Navigation failed: " + exception.Message
+    │           │       │       │
+    │           │       │       └── Assign: NextPageExists = False
+    │           │       │
+    │           │       └── Log Message
+    │           │           └─ "Navigated to page: " + CurrentPage.ToString()
+    │           │
+    │           └── Else
+    │               └── Break
+    │
+    └── While: Do_Loop_Condition
+        └─ Condition: NextPageExists = True And CurrentPage <= MaxPages
+
+
+
+
+Sequence: Export_Data
+├── Assign: Generate_Filename
+│   └─ OutputPath = "C:\RPA_Output\Products_" + 
+│       DateTime.Now.ToString("yyyyMMdd_HHmmss") + ".xlsx"
+│
+└── Excel Application Scope: Save_To_Excel
+    ├── FilePath: OutputPath
+    ├── Visible: False
+    ├── Write Range
+    │   ├─ DataTable: ProductsDT
+    │   ├─ SheetName: "Scraped Products"
+    │   └─ Range: "A1"
+    ├── Auto Fit Columns
+    │   └─ Range: "A:F"
+    └── Save Workbook
+
+
+
+
+Try Catch: Global_Exception_Handler
+├── Try
+│   └── Sequence: Main_Process
+│       ├── Initialize_Application
+│       ├── Data_Scraping_Main
+│       └── Export_Data
+│
+├── Catch (System.Net.WebException) : Navigation_Errors
+│   └── Sequence: Handle_Navigation_Error
+│       ├── Log Message
+│       │   ├─ Level: Error
+│       │   └─ Message: "Network error: " + exception.Message
+│       │
+│       ├── Take Screenshot
+│       │   ├─ Browser: BrowserInstance
+│       │   ├─ ImageFormat: PNG
+│       │   └─ FileName: "Navigation_Error_" + DateTime.Now.ToString("HHmmss") + ".png"
+│       │
+│       ├── If: Partial_Data_Exists
+│       │   ├─ Condition: ProductsDT.Rows.Count > 0
+│       │   │
+│       │   └── Then
+│       │       └── Save Partial Data
+│       │           ├─ FileName: "Partial_Data_Recovery.xlsx"
+│       │           └─ Log recovery attempt
+│       │
+│       └── Retry Scope: Attempt_Recovery
+│           ├─ NumberOfRetries: 2
+│           ├─ DelayBetweenRetries: 10000
+│           │
+│           └── Reinitialize Browser and continue from last page
+│
+├── Catch (UiPath.Core.SelectorNotFoundException) : Element_Errors
+│   └── Sequence: Handle_Selector_Error
+│       ├── Log Message
+│       │   ├─ Level: Warning
+│       │   └─ Message: "Element not found: " + exception.Message
+│       │
+│       ├── Take Screenshot
+│       │   └─ FileName: "Selector_Error_" + DateTime.Now.ToString("HHmmss") + ".png"
+│       │
+│       ├── Attempt Alternative Selectors
+│       │   ├─ Try CSS-based selector
+│       │   ├─ Try XPath selector
+│       │   └─ Fallback to CV approach
+│       │
+│       └── If: CV_Fallback_Successful
+│           ├─ Condition: CV element found
+│           │
+│           └── Then
+│               ├─ Continue with CV method
+│               └─ Log "Using CV fallback method"
+│
+├── Catch (UiPath.Core.InvalidStateException) : Browser_Errors
+│   └── Sequence: Handle_Browser_Error
+│       ├── Log Message
+│       │   ├─ Level: Error
+│       │   └─ Message: "Browser state error: " + exception.Message
+│       │
+│       ├── Close Browser (if open)
+│       │   └─ Browser: BrowserInstance
+│       │
+│       ├── Delay: 5000
+│       │
+│       ├── Reopen Browser
+│       │   ├─ Same URL
+│       │   └─ Attempt to restore session
+│       │
+│       └── Retry from last successful page
+│
+├── Catch (System.Exception) : Generic_Errors
+│   └── Sequence: Handle_Generic_Error
+│       ├── Log Message
+│       │   ├─ Level: Error
+│       │   └─ Message: "Unexpected error: " + exception.ToString()
+│       │
+│       ├── Take Screenshot
+│       │   └─ FileName: "Generic_Error_" + DateTime.Now.ToString("HHmmss") + ".png"
+│       │
+│       ├── Save Partial Data
+│       │   └─ If ProductsDT.Rows.Count > 0
+│       │
+│       └── Send Email Notification
+│           ├─ To: "admin@company.com"
+│           ├─ Subject: "Scraping Process Failed"
+│           ├─ Body: exception.ToString() + " - Data recovered: " + ProductsDT.Rows.Count.ToString()
+│           └─ Attachments: Screenshot and partial data
+│
+└── Finally: Cleanup_Resources
+    ├── Sequence: Resource_Cleanup
+    │   ├── If: Browser_Is_Open
+    │   │   ├─ Condition: BrowserInstance IsNot Nothing
+    │   │   │
+    │   │   └── Then
+    │   │       └── Close Browser
+    │   │           └─ Browser: BrowserInstance
+    │   │
+    │   ├── Generate Report
+    │   │   ├─ Total products scraped: ProductsDT.Rows.Count
+    │   │   ├─ Pages processed: CurrentPage
+    │   │   ├─ Errors encountered: ErrorCount
+    │   │   └─ Duration: EndTime - StartTime
+    │   │
+    │   └── Log Message
+    │       ├─ Level: Info
+    │       └─ Message: "Process completed. Scraped " + ProductsDT.Rows.Count.ToString() + 
+    │           " products from " + CurrentPage.ToString() + " pages."
+    │
+    └── Write Range: Final_Data_Export
+        └─ Ensure data is saved even after errors

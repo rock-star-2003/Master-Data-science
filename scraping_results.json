@@ -1,0 +1,21 @@
+[
+  {
+    "title": "iQOO Neo 10 (Inferno Red, 12GB RAM, 256GB Storage) | Snapdragon 8s Gen 4 Processor & SuperComputing Chip Q1 | 7000 mAh Battery | Segment’s Highest 144 FPS Gaming Smartphone",
+    "price": "35,998.",
+    "brand": "Visit the iQOO Store",
+    "url": "https://amzn.in/d/auEZxWh",
+    "success": true
+  },
+  {
+    "success": false,
+    "error": "HTTP 429",
+    "url": "https://dl.flipkart.com/s/Hfn3wIuuuN"
+  },
+  {
+    "title": "LG 655 L Frost-Free Smart Inverter Double Door Side-By-Side Refrigerator (GL-B257HDSY, Dazzle Steel, Express Freeze | Multi Air-Flow)",
+    "price": "71,999.",
+    "brand": "Visit the LG Store",
+    "url": "https://amzn.in/d/8ROjVGv",
+    "success": true
+  }
+]
